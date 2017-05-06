@@ -1,0 +1,25 @@
+{
+  "name": "meritocracy",
+  "alias": "experiment",
+  "description": "Public-good game with meritocratic matching in nodegame",
+  "version": "0.2.0",
+  "author": {
+    "name": "Stefano Balietti",
+    "email": "sbalietti@ethz.ch",
+    "url": "http://www.nodegame.org"
+  }
+,
+  "main": "./index.html"
+,
+  "keywords": [
+    "meritocracy",
+    "game theory"
+  ]
+,
+  "license": "MIT/X11"
+,
+  "engines": {
+    "node": "*",
+    "nodegame": ">= 0.9.1"
+  }
+}
