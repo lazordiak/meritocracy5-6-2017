@@ -98,31 +98,33 @@ function doGroupMatching(sortedContribs) {
     len = sortedContribs.length;
     groups = [];
     ranking = [];
-    bars = [];
+    bars = [], bars2 = [];
     gId = -1;
     for (i = 0; i < len; i++) {
         if (i % SUBGROUP_SIZE == 0) {
             ++gId;
             groups[gId] = [];
             bars[gId] = [];
+            bars2[gId] = []
         }
         entry = sortedContribs[i];
         entry.group = groupNames[gId];
         groups[gId].push(entry);
         ranking.push(entry.player);
-		//this has indeed changed the bars but now the payoff is out of whack
+
+	//this has indeed changed the bars but now the payoff is out of whack
         bars[gId].push([entry.lienumber, 0]); // 0 is demand (not used).
-		bars2[gId].push([entry.contribution, 0]);//for contrib
-		console.log(entry.contribution)
-		console.log('CONTRIB VVAL')
-		console.log(bars)
-		console.log('HERES THOSe BARS')
+	bars2[gId].push([entry.contribution, 0]);//for contrib
+	console.log(entry.contribution)
+	console.log('CONTRIB VVAL')
+	console.log(bars)
+	console.log('HERES THOSe BARS')
     }
     return {
         groups: groups,
         ranking: ranking,
         bars: bars,
-		bars2: bars2
+	bars2: bars2
     };
 }
 
@@ -224,7 +226,7 @@ function finalizeRound(currentStage, bars,
             // Position in Rank (array of group id, position within group).
             positionInNoisyRank = [i, j];
             pId = contribObj.player;
-
+            debugger
             playerPayoff = getPayoff(bars2, positionInNoisyRank);
 
             // Updating the player database with the current payoff.
@@ -317,13 +319,13 @@ function sendResults() {
     noisyRanking = ranking;
     noisyGroups = groups;
     noisyGroupStats = groupStats;
-
+debugger
     // Bars for display in clients.
     bars = matching.bars;
-	bars2 = matching.bars2;
+    bars2 = matching.bars2;
 	
     // Save to db, and sends results to players.
     finalizeRound(currentStage, bars,
                   groupStats, groups, ranking,
-                  noisyGroupStats, noisyGroups, noisyRanking, bars2);
+                  noisyGroupStats, noisyGroups, noisyRanking, undefined, bars2);
 }
