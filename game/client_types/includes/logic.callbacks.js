@@ -6,7 +6,7 @@
  * Contains helper functions to create Gaussian noise.
  *
  * http://www.nodegame.org
- * ---
+ * ---unclean
  */
 
 var J = require('JSUS').JSUS;
@@ -58,8 +58,8 @@ function sortContributionsWithLies(c1, c2) {
 	//maybe itd be easier to keep the bars as is and then just have a text thing at the bottom like 'btw these guys lied' w/ the values
     
     // Default sorting.
-    if (c1.lienumber > c2.lienumber) return -1;
-    if (c1.lienumber < c2.lienumber) return 1;
+    if (c1.contribution > c2.contribution) return -1;
+    if (c1.contribution < c2.contribution) return 1;
     if (Math.random() <= 0.5) return -1;
     return 1;
 }
@@ -93,7 +93,7 @@ function getPayoff(bars, position) {
  * @return {object} Object containing the ranking and groups
  */
 function doGroupMatching(sortedContribs) {
-    var i, len, groups, entry, ranking, bars;
+    var i, len, groups, entry, ranking, bars, bars2;
     var gId;
     len = sortedContribs.length;
     groups = [];
@@ -112,13 +112,17 @@ function doGroupMatching(sortedContribs) {
         ranking.push(entry.player);
 		//this has indeed changed the bars but now the payoff is out of whack
         bars[gId].push([entry.lienumber, 0]); // 0 is demand (not used).
+		bars2[gId].push([entry.contribution, 0]);//for contrib
+		console.log(entry.contribution)
+		console.log('CONTRIB VVAL')
 		console.log(bars)
-		console.log('HERES THOS BARS')
+		console.log('HERES THOSe BARS')
     }
     return {
         groups: groups,
         ranking: ranking,
-        bars: bars
+        bars: bars,
+		bars2: bars2
     };
 }
 
@@ -195,7 +199,7 @@ function emitPlayersResults(pId, bars, position, payoff, compatibility) {
 // Saves the outcome of a round to database, and communicates it to the clients.
 function finalizeRound(currentStage, bars,
                        groupStats, groups, ranking, noisyGroupStats,
-                       noisyGroups, noisyRanking, compatibility) {
+                       noisyGroups, noisyRanking, compatibility, bars2) {
 
     var i, len, j, lenJ, contribObj;
     var pId, positionInNoisyRank, playerPayoff;
@@ -221,7 +225,7 @@ function finalizeRound(currentStage, bars,
             positionInNoisyRank = [i, j];
             pId = contribObj.player;
 
-            playerPayoff = getPayoff(bars, positionInNoisyRank);
+            playerPayoff = getPayoff(bars2, positionInNoisyRank);
 
             // Updating the player database with the current payoff.
             code = channel.registry.getClient(pId);
@@ -289,7 +293,7 @@ function sendResults() {
 	console.log(receivedData);
 	
     // Detect lies.
-    doLieDetection(receivedData);
+    //doLieDetection(receivedData);
 
 	//console.log( 'HERES THE RECEIVED DATA');
 	//console.log(receivedData);
@@ -316,9 +320,10 @@ function sendResults() {
 
     // Bars for display in clients.
     bars = matching.bars;
-
+	bars2 = matching.bars2;
+	
     // Save to db, and sends results to players.
     finalizeRound(currentStage, bars,
                   groupStats, groups, ranking,
-                  noisyGroupStats, noisyGroups, noisyRanking);
+                  noisyGroupStats, noisyGroups, noisyRanking, bars2);
 }
