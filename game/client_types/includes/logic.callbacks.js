@@ -226,7 +226,7 @@ function finalizeRound(currentStage, bars,
             // Position in Rank (array of group id, position within group).
             positionInNoisyRank = [i, j];
             pId = contribObj.player;
-            debugger
+
             playerPayoff = getPayoff(bars2, positionInNoisyRank);
 
             // Updating the player database with the current payoff.
@@ -319,7 +319,7 @@ function sendResults() {
     noisyRanking = ranking;
     noisyGroups = groups;
     noisyGroupStats = groupStats;
-debugger
+
     // Bars for display in clients.
     bars = matching.bars;
     bars2 = matching.bars2;
